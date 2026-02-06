@@ -275,7 +275,7 @@ nav {
 .hero-visual {
   margin-top: 72px;
   position: relative;
-  max-width: 1100px;
+  max-width: 900px;
   width: 100%;
   animation: fadeUp 1s ease 0.5s both;
 }
@@ -290,7 +290,7 @@ nav {
 
 .hero-video {
   width: 100%;
-  height: 100%;
+  height: auto;
   display: block;
 }
 
@@ -517,22 +517,121 @@ nav {
 .step-visual {
   width: 100%;
   aspect-ratio: 4/3;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  overflow: hidden;
   margin-bottom: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   position: relative;
 }
 
-.step-visual img {
+.step-card {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  border-radius: 15px;
+  border-radius: 18px;
+  padding: 20px 22px;
+  background: radial-gradient(circle at top left, rgba(148,163,253,0.2), transparent 55%),
+              radial-gradient(circle at bottom right, rgba(45,212,191,0.18), transparent 55%),
+              #020617;
+  border: 1px solid rgba(148,163,184,0.35);
+  box-shadow: 0 22px 60px rgba(15,23,42,0.65);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.step-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.step-icon-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.7);
+}
+
+.step-label-strong {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.step-label-sub {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.step-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.step-pill {
+  font-size: 0.72rem;
+  padding: 4px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(148,163,184,0.7);
+  background: rgba(15,23,42,0.9);
+  color: var(--text-secondary);
+}
+
+.step-progress {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.step-progress-bar {
+  flex: 1;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(15,23,42,0.9);
+  overflow: hidden;
+}
+
+.step-progress-fill {
+  height: 100%;
+  border-radius: inherit;
+}
+
+.step-upload .step-icon-badge {
+  background: radial-gradient(circle at top, #facc15, #f97316);
+}
+
+.step-upload .step-progress-fill {
+  width: 35%;
+  background: linear-gradient(90deg, #fde68a, #f97316);
+}
+
+.step-select .step-icon-badge {
+  background: radial-gradient(circle at top, #22c55e, #16a34a);
+}
+
+.step-select .step-progress-fill {
+  width: 65%;
+  background: linear-gradient(90deg, #bbf7d0, #22c55e);
+}
+
+.step-browse .step-icon-badge {
+  background: radial-gradient(circle at top, #60a5fa, #6366f1);
+}
+
+.step-browse .step-progress-fill {
+  width: 100%;
+  background: linear-gradient(90deg, #bfdbfe, #6366f1);
 }
 
 .step h3 {
@@ -1038,10 +1137,25 @@ footer a:hover { color: var(--text-primary); }
       <div class="step reveal">
         <div class="step-number">01</div>
         <div class="step-visual">
-          <div style="padding:24px; text-align:center;">
-            <div style="font-size:40px; margin-bottom:12px;">📂</div>
-            <div style="font-size:0.98rem; font-weight:600; margin-bottom:6px;">Upload course file</div>
-            <div style="font-size:0.8rem; color:var(--text-muted);">TXT &amp; XLSX, or from history</div>
+          <div class="step-card step-upload">
+            <div class="step-card-header">
+              <div>
+                <div class="step-label-strong">Upload course file</div>
+                <div class="step-label-sub">TXT / XLSX · history support</div>
+              </div>
+              <div class="step-icon-badge">📂</div>
+            </div>
+            <div class="step-pill-row">
+              <span class="step-pill">Drag &amp; drop</span>
+              <span class="step-pill">Bar-Ilan format</span>
+              <span class="step-pill">Auto-validate file</span>
+            </div>
+            <div class="step-progress">
+              <div class="step-progress-bar">
+                <div class="step-progress-fill"></div>
+              </div>
+              <span>Step 1 / 3</span>
+            </div>
           </div>
         </div>
         <h3>Upload Your Courses</h3>
@@ -1050,10 +1164,25 @@ footer a:hover { color: var(--text-primary); }
       <div class="step reveal">
         <div class="step-number">02</div>
         <div class="step-visual">
-          <div style="padding:24px; text-align:center;">
-            <div style="font-size:40px; margin-bottom:12px;">✅</div>
-            <div style="font-size:0.98rem; font-weight:600; margin-bottom:6px;">Pick courses &amp; block times</div>
-            <div style="font-size:0.8rem; color:var(--text-muted);">Up to 7 per semester, with constraints</div>
+          <div class="step-card step-select">
+            <div class="step-card-header">
+              <div>
+                <div class="step-label-strong">Pick courses &amp; block times</div>
+                <div class="step-label-sub">Up to 7 per semester</div>
+              </div>
+              <div class="step-icon-badge">✅</div>
+            </div>
+            <div class="step-pill-row">
+              <span class="step-pill">3 semesters (A / B / Summer)</span>
+              <span class="step-pill">Block days &amp; hours</span>
+              <span class="step-pill">Manual courses</span>
+            </div>
+            <div class="step-progress">
+              <div class="step-progress-bar">
+                <div class="step-progress-fill"></div>
+              </div>
+              <span>Step 2 / 3</span>
+            </div>
           </div>
         </div>
         <h3>Select Your Courses</h3>
@@ -1062,52 +1191,29 @@ footer a:hover { color: var(--text-primary); }
       <div class="step reveal">
         <div class="step-number">03</div>
         <div class="step-visual">
-          <div style="padding:24px; text-align:center;">
-            <div style="font-size:40px; margin-bottom:12px;">🗓️</div>
-            <div style="font-size:0.98rem; font-weight:600; margin-bottom:6px;">Browse all combinations</div>
-            <div style="font-size:0.8rem; color:var(--text-muted);">Sort, filter with SchedBot, then export</div>
+          <div class="step-card step-browse">
+            <div class="step-card-header">
+              <div>
+                <div class="step-label-strong">Browse all combinations</div>
+                <div class="step-label-sub">Sort, filter, then export</div>
+              </div>
+              <div class="step-icon-badge">🗓️</div>
+            </div>
+            <div class="step-pill-row">
+              <span class="step-pill">50,000+ schedules</span>
+              <span class="step-pill">Ask SchedBot (HE / EN)</span>
+              <span class="step-pill">Export to PNG / CSV</span>
+            </div>
+            <div class="step-progress">
+              <div class="step-progress-bar">
+                <div class="step-progress-fill"></div>
+              </div>
+              <span>Step 3 / 3</span>
+            </div>
           </div>
         </div>
         <h3>Explore Schedules</h3>
         <p>Browse through every valid schedule, sort by preferences, use the AI chatbot for smart filtering, and export to PNG, CSV, or print.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Showcase -->
-<section class="showcase" id="showcase">
-  <div class="reveal">
-    <div class="section-label">Showcase</div>
-    <h2 class="section-title">See Schedulify in action</h2>
-    <p class="section-subtitle">A polished, intuitive interface built with Qt/QML — designed for real student workflows.</p>
-  </div>
-  <div class="showcase-grid">
-    <div class="showcase-card reveal">
-      <div class="showcase-img" style="display:flex;align-items:center;justify-content:center;font-size:0.95rem;color:var(--text-muted);background:linear-gradient(135deg,#1a1b25,#020617);">
-        Generated schedules view (visual demo placeholder)
-      </div>
-      <div class="showcase-info">
-        <h3>Generated Schedules Display</h3>
-        <p>Navigate through hundreds of valid schedule combinations with color-coded courses, building & room info, and time block indicators.</p>
-      </div>
-    </div>
-    <div class="showcase-card reveal">
-      <div class="showcase-img" style="display:flex;align-items:center;justify-content:center;font-size:0.95rem;color:var(--text-muted);background:linear-gradient(135deg,#111827,#020617);">
-        SchedBot assistant panel (visual demo placeholder)
-      </div>
-      <div class="showcase-info">
-        <h3>AI-Powered Schedule Filtering</h3>
-        <p>Ask SchedBot in Hebrew or English to find schedules matching your constraints — powered by Claude API with smart fallback mechanisms.</p>
-      </div>
-    </div>
-    <div class="showcase-card wide reveal">
-      <div class="showcase-img" style="display:flex;align-items:center;justify-content:center;font-size:0.95rem;color:var(--text-muted);background:radial-gradient(circle at top,#1f2937,#020617);">
-        Full workflow: upload → select courses → generate &amp; filter schedules → export (video demo coming soon)
-      </div>
-      <div class="showcase-info">
-        <h3>Complete End-to-End Workflow</h3>
-        <p>From file upload through course selection, constraint definition, algorithm execution, multi-semester schedule generation, AI-assisted filtering, to final export as PNG, CSV, or direct print — all within one seamless desktop experience.</p>
       </div>
     </div>
   </div>
@@ -1261,8 +1367,8 @@ footer a:hover { color: var(--text-primary); }
     <h2>Ready to build your<br><span class="gradient-text">perfect schedule?</span></h2>
     <p>Download Schedulify 4.0 for Windows or macOS. No installation of Qt required — everything is bundled.</p>
     <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
-      <a href="../Schedulify.zip" class="btn-primary">⬇ Download for Windows</a>
-      <a href="../Schedulify.zip" class="btn-secondary">⬇ Download for macOS</a>
+      <a href="../../Schedulify.zip" class="btn-primary">⬇ Download for Windows</a>
+      <a href="../../Schedulify.zip" class="btn-secondary">⬇ Download for macOS</a>
     </div>
   </div>
 </section>
