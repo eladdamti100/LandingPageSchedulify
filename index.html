@@ -304,41 +304,6 @@ nav {
 }
 
 /* Floating tech badges */
-.floating-badge {
-  position: absolute;
-  padding: 10px 18px;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-  animation: float 6s ease-in-out infinite;
-  z-index: 2;
-}
-
-.floating-badge.left {
-  left: -30px;
-  top: 30%;
-  animation-delay: -2s;
-}
-
-.floating-badge.right {
-  right: -30px;
-  top: 20%;
-  animation-delay: -4s;
-}
-
-.floating-badge.bottom {
-  right: 10%;
-  bottom: -20px;
-  animation-delay: -1s;
-}
-
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-12px); }
@@ -1021,7 +986,6 @@ footer a:hover { color: var(--text-primary); }
   <ul class="nav-links">
     <li><a href="#features">Features</a></li>
     <li><a href="#how-it-works">How It Works</a></li>
-    <li><a href="#showcase">Showcase</a></li>
     <li><a href="#architecture">Architecture</a></li>
     <li><a href="#versions">Versions</a></li>
   </ul>
@@ -1047,15 +1011,6 @@ footer a:hover { color: var(--text-primary); }
     <div class="hero-screenshot-glow"></div>
     <div class="hero-screenshot">
       <video class="hero-video" src="./assets/schedulify-demo.mp4" controls muted playsinline></video>
-    </div>
-    <div class="floating-badge left">
-      🎓 50,000+ Schedules
-    </div>
-    <div class="floating-badge right">
-      🤖 AI-Powered Filters
-    </div>
-    <div class="floating-badge bottom">
-      ⚡ 3 Semesters Support
     </div>
   </div>
 </section>
