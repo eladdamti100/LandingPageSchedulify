@@ -7,9 +7,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg-deep: #0a0b0f;
-  --bg-card: #12131a;
-  --bg-elevated: #1a1b25;
+  --bg-deep: #f4f6fb;
+  --bg-card: #ffffff;
+  --bg-elevated: #f9fafb;
   --accent: #6366f1;
   --accent-glow: #818cf8;
   --accent-muted: #4f46e5;
@@ -17,11 +17,11 @@
   --amber: #f59e0b;
   --rose: #f43f5e;
   --cyan: #06b6d4;
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --border: rgba(255,255,255,0.06);
-  --glow: 0 0 80px rgba(99,102,241,0.15);
+  --text-primary: #0f172a;
+  --text-secondary: #4b5563;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
+  --glow: 0 24px 60px rgba(148,163,184,0.25);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -34,7 +34,7 @@ html {
 
 body {
   font-family: 'Outfit', sans-serif;
-  background: var(--bg-deep);
+  background: radial-gradient(circle at top, #e5edff 0, #f4f6fb 45%, #f4f6fb 100%);
   color: var(--text-primary);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
@@ -42,12 +42,7 @@ body {
 
 /* Noise texture overlay */
 body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 9999;
+  content: none;
 }
 
 /* ====== NAVIGATION ====== */
@@ -61,9 +56,13 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  backdrop-filter: blur(20px) saturate(1.4);
-  background: rgba(10,11,15,0.7);
-  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(18px);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(244,114,182,0.45), transparent 55%),
+    radial-gradient(circle at 100% 100%, rgba(56,189,248,0.45), transparent 55%),
+    linear-gradient(120deg, #0f172a, #1d4ed8, #f97316);
+  border-bottom: 1px solid rgba(15,23,42,0.8);
+  box-shadow: 0 18px 45px rgba(15,23,42,0.55);
   transition: all 0.3s ease;
 }
 
@@ -75,7 +74,7 @@ nav {
   font-size: 1.3rem;
   letter-spacing: -0.02em;
   text-decoration: none;
-  color: var(--text-primary);
+  color: #f9fafb;
 }
 
 .nav-logo-icon {
@@ -98,7 +97,7 @@ nav {
 }
 
 .nav-links a {
-  color: var(--text-secondary);
+  color: rgba(248,250,252,0.7);
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
@@ -106,13 +105,13 @@ nav {
   letter-spacing: 0.01em;
 }
 
-.nav-links a:hover { color: var(--text-primary); }
+.nav-links a:hover { color: #ffffff; }
 
 .nav-cta {
   padding: 10px 24px;
-  background: var(--accent);
-  color: white;
-  border: none;
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid rgba(249,250,251,0.9);
   border-radius: 10px;
   font-family: inherit;
   font-size: 0.9rem;
@@ -123,8 +122,8 @@ nav {
 }
 
 .nav-cta:hover {
-  background: var(--accent-glow);
-  box-shadow: 0 0 30px rgba(99,102,241,0.3);
+  background: #e5e7eb;
+  box-shadow: 0 0 24px rgba(15,23,42,0.4);
   transform: translateY(-1px);
 }
 
@@ -138,6 +137,7 @@ nav {
   text-align: center;
   padding: 140px 48px 80px;
   position: relative;
+  background: linear-gradient(135deg, #eef2ff 0%, #f9fafb 45%, #ffffff 100%);
 }
 
 /* Gradient orbs */
@@ -449,9 +449,12 @@ nav {
 /* ====== HOW IT WORKS ====== */
 .how-it-works {
   padding: 120px 48px;
-  background: var(--bg-card);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
+  background:
+    radial-gradient(circle at top left, rgba(129,140,248,0.12), transparent 55%),
+    radial-gradient(circle at bottom right, rgba(45,212,191,0.10), transparent 55%),
+    var(--bg-deep);
+  border-top: none;
+  border-bottom: none;
 }
 
 .how-inner {
@@ -472,11 +475,12 @@ nav {
 
 .step-number {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 4rem;
-  font-weight: 800;
-  color: rgba(99,102,241,0.1);
-  line-height: 1;
-  margin-bottom: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 16px;
 }
 
 .step-visual {
@@ -489,13 +493,14 @@ nav {
 .step-card {
   width: 100%;
   height: 100%;
-  border-radius: 18px;
-  padding: 20px 22px;
-  background: radial-gradient(circle at top left, rgba(148,163,253,0.2), transparent 55%),
-              radial-gradient(circle at bottom right, rgba(45,212,191,0.18), transparent 55%),
-              #020617;
-  border: 1px solid rgba(148,163,184,0.35);
-  box-shadow: 0 22px 60px rgba(15,23,42,0.65);
+  border-radius: 24px;
+  padding: 22px 24px;
+  background:
+    radial-gradient(circle at top left, rgba(129,140,248,0.16), transparent 55%),
+    radial-gradient(circle at bottom right, rgba(45,212,191,0.16), transparent 55%),
+    linear-gradient(135deg, #ffffff, #f9fafb);
+  border: 1px solid rgba(148,163,184,0.45);
+  box-shadow: 0 24px 70px rgba(15,23,42,0.08);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -542,12 +547,13 @@ nav {
 }
 
 .step-pill {
-  font-size: 0.72rem;
-  padding: 4px 9px;
+  font-size: 0.75rem;
+  padding: 6px 12px;
   border-radius: 999px;
-  border: 1px solid rgba(148,163,184,0.7);
-  background: rgba(15,23,42,0.9);
+  border: 1px solid rgba(148,163,184,0.45);
+  background: rgba(255,255,255,0.92);
   color: var(--text-secondary);
+  box-shadow: 0 10px 30px rgba(15,23,42,0.08);
 }
 
 .step-progress {
@@ -561,9 +567,9 @@ nav {
 
 .step-progress-bar {
   flex: 1;
-  height: 4px;
+  height: 5px;
   border-radius: 999px;
-  background: rgba(15,23,42,0.9);
+  background: rgba(241,245,249,0.9);
   overflow: hidden;
 }
 
@@ -1085,25 +1091,25 @@ footer a:hover { color: var(--text-primary); }
   <div class="how-inner">
     <div class="reveal">
       <div class="section-label">How It Works</div>
-      <h2 class="section-title">Three steps to your ideal schedule</h2>
-      <p class="section-subtitle">Upload, select, and explore — the algorithm handles the rest.</p>
+      <h2 class="section-title">Three simple steps to a schedule you actually like</h2>
+      <p class="section-subtitle">Drop in your file, tell us what works for you, and browse schedules that actually fit your life.</p>
     </div>
     <div class="steps">
       <div class="step reveal">
-        <div class="step-number">01</div>
+        <div class="step-number">Step 01</div>
         <div class="step-visual">
           <div class="step-card step-upload">
             <div class="step-card-header">
               <div>
-                <div class="step-label-strong">Upload course file</div>
-                <div class="step-label-sub">TXT / XLSX · history support</div>
+                <div class="step-label-strong">Drop in your course file</div>
+                <div class="step-label-sub">TXT or Excel from Bar-Ilan</div>
               </div>
               <div class="step-icon-badge">📂</div>
             </div>
             <div class="step-pill-row">
-              <span class="step-pill">Drag &amp; drop</span>
-              <span class="step-pill">Bar-Ilan format</span>
-              <span class="step-pill">Auto-validate file</span>
+              <span class="step-pill">Simple drag &amp; drop</span>
+              <span class="step-pill">Understands Bar-Ilan format</span>
+              <span class="step-pill">Checks the file for issues</span>
             </div>
             <div class="step-progress">
               <div class="step-progress-bar">
@@ -1113,24 +1119,24 @@ footer a:hover { color: var(--text-primary); }
             </div>
           </div>
         </div>
-        <h3>Upload Your Courses</h3>
-        <p>Drag and drop your course file (TXT or Excel) or choose from previously uploaded files saved in the history database.</p>
+        <h3>Upload your course file</h3>
+        <p>Drag in the file you get from the university or pick one you've used before. Schedulify reads it, cleans it up, and gets everything ready in a few seconds.</p>
       </div>
       <div class="step reveal">
-        <div class="step-number">02</div>
+        <div class="step-number">Step 02</div>
         <div class="step-visual">
           <div class="step-card step-select">
             <div class="step-card-header">
               <div>
-                <div class="step-label-strong">Pick courses &amp; block times</div>
-                <div class="step-label-sub">Up to 7 per semester</div>
+                <div class="step-label-strong">Tell us what works for you</div>
+                <div class="step-label-sub">Courses and busy times</div>
               </div>
               <div class="step-icon-badge">✅</div>
             </div>
             <div class="step-pill-row">
-              <span class="step-pill">3 semesters (A / B / Summer)</span>
-              <span class="step-pill">Block days &amp; hours</span>
-              <span class="step-pill">Manual courses</span>
+              <span class="step-pill">Choose the courses you care about</span>
+              <span class="step-pill">Block days and hours you're busy</span>
+              <span class="step-pill">Add missing courses by hand</span>
             </div>
             <div class="step-progress">
               <div class="step-progress-bar">
@@ -1140,24 +1146,24 @@ footer a:hover { color: var(--text-primary); }
             </div>
           </div>
         </div>
-        <h3>Select Your Courses</h3>
-        <p>Pick up to 7 courses per semester, set time constraints, add manual courses, and get real-time validation warnings.</p>
+        <h3>Set your rules</h3>
+        <p>Pick the courses you want, block out times you can't study, and add anything that's missing. We'll only suggest schedules that actually fit your life.</p>
       </div>
       <div class="step reveal">
-        <div class="step-number">03</div>
+        <div class="step-number">Step 03</div>
         <div class="step-visual">
           <div class="step-card step-browse">
             <div class="step-card-header">
               <div>
-                <div class="step-label-strong">Browse all combinations</div>
-                <div class="step-label-sub">Sort, filter, then export</div>
+                <div class="step-label-strong">Browse smart schedules</div>
+                <div class="step-label-sub">Filter, compare, and save favorites</div>
               </div>
               <div class="step-icon-badge">🗓️</div>
             </div>
             <div class="step-pill-row">
-              <span class="step-pill">50,000+ schedules</span>
-              <span class="step-pill">Ask SchedBot (HE / EN)</span>
-              <span class="step-pill">Export to PNG / CSV</span>
+              <span class="step-pill">See tens of thousands of options</span>
+              <span class="step-pill">Chat with SchedBot (HE / EN)</span>
+              <span class="step-pill">Export, save, or print your picks</span>
             </div>
             <div class="step-progress">
               <div class="step-progress-bar">
@@ -1167,8 +1173,8 @@ footer a:hover { color: var(--text-primary); }
             </div>
           </div>
         </div>
-        <h3>Explore Schedules</h3>
-        <p>Browse through every valid schedule, sort by preferences, use the AI chatbot for smart filtering, and export to PNG, CSV, or print.</p>
+        <h3>Choose a schedule you love</h3>
+        <p>Scroll through all the valid options, sort and filter by what matters to you, chat with the assistant for ideas, and export your favorite schedule in a click.</p>
       </div>
     </div>
   </div>
@@ -1332,7 +1338,7 @@ footer a:hover { color: var(--text-primary); }
 <footer>
   <div>© 2025 Schedulify. All rights reserved.</div>
   <div class="footer-links">
-    <a href="https://github.com/eladdamti100/LandingPageSchedulify">GitHub</a>
+    <a href="https://github.com/eladdamti100/Schedulify.git">GitHub</a>
     <a href="https://github.com/eladdamti100/LandingPageSchedulify/releases/latest/download/SDD.pdf">Documentation (SDD)</a>
   </div>
 </footer>
