@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schedulify 4.0 — Smart Schedule Builder for Students</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-deep: #0a0b0f;
+  --bg-card: #12131a;
+  --bg-elevated: #1a1b25;
+  --accent: #6366f1;
+  --accent-glow: #818cf8;
+  --accent-muted: #4f46e5;
+  --green: #22c55e;
+  --amber: #f59e0b;
+  --rose: #f43f5e;
+  --cyan: #06b6d4;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border: rgba(255,255,255,0.06);
+  --glow: 0 0 80px rgba(99,102,241,0.15);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-muted) var(--bg-deep);
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Noise texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ====== NAVIGATION ====== */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 20px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  backdrop-filter: blur(20px) saturate(1.4);
+  background: rgba(10,11,15,0.7);
+  border-bottom: 1px solid var(--border);
+  transition: all 0.3s ease;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 800;
+  font-size: 1.3rem;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  color: var(--text-primary);
+}
+
+.nav-logo-icon {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--accent), var(--cyan));
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 900;
+  color: white;
+}
+
+.nav-links {
+  display: flex;
+  gap: 36px;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.2s;
+  letter-spacing: 0.01em;
+}
+
+.nav-links a:hover { color: var(--text-primary); }
+
+.nav-cta {
+  padding: 10px 24px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-decoration: none;
+}
+
+.nav-cta:hover {
+  background: var(--accent-glow);
+  box-shadow: 0 0 30px rgba(99,102,241,0.3);
+  transform: translateY(-1px);
+}
+
+/* ====== HERO ====== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 140px 48px 80px;
+  position: relative;
+}
+
+/* Gradient orbs */
+.hero::before {
+  content: '';
+  position: absolute;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%);
+  top: -100px;
+  right: -200px;
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(6,182,212,0.08) 0%, transparent 70%);
+  bottom: -100px;
+  left: -200px;
+  pointer-events: none;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  background: rgba(99,102,241,0.1);
+  border: 1px solid rgba(99,102,241,0.2);
+  border-radius: 100px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--accent-glow);
+  margin-bottom: 32px;
+  animation: fadeUp 0.8s ease both;
+}
+
+.hero-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.hero h1 {
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  max-width: 900px;
+  animation: fadeUp 0.8s ease 0.1s both;
+}
+
+.hero h1 .gradient-text {
+  background: linear-gradient(135deg, var(--accent-glow), var(--cyan), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 24px auto 0;
+  line-height: 1.7;
+  font-weight: 400;
+  animation: fadeUp 0.8s ease 0.2s both;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 44px;
+  animation: fadeUp 0.8s ease 0.3s both;
+}
+
+.btn-primary {
+  padding: 16px 36px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-primary:hover {
+  background: var(--accent-glow);
+  box-shadow: 0 8px 40px rgba(99,102,241,0.35);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  padding: 16px 36px;
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-secondary:hover {
+  background: var(--bg-card);
+  border-color: rgba(255,255,255,0.12);
+  transform: translateY(-2px);
+}
+
+/* Hero screenshot mockup */
+.hero-visual {
+  margin-top: 72px;
+  position: relative;
+  max-width: 1100px;
+  width: 100%;
+  animation: fadeUp 1s ease 0.5s both;
+}
+
+.hero-screenshot {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--glow), 0 40px 80px rgba(0,0,0,0.5);
+  overflow: hidden;
+}
+
+.hero-video {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hero-screenshot-glow {
+  position: absolute;
+  inset: -2px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.2), transparent, rgba(6,182,212,0.2));
+  z-index: -1;
+  filter: blur(1px);
+}
+
+/* Floating tech badges */
+.floating-badge {
+  position: absolute;
+  padding: 10px 18px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  animation: float 6s ease-in-out infinite;
+  z-index: 2;
+}
+
+.floating-badge.left {
+  left: -30px;
+  top: 30%;
+  animation-delay: -2s;
+}
+
+.floating-badge.right {
+  right: -30px;
+  top: 20%;
+  animation-delay: -4s;
+}
+
+.floating-badge.bottom {
+  right: 10%;
+  bottom: -20px;
+  animation-delay: -1s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ====== STATS BAR ====== */
+.stats-bar {
+  display: flex;
+  justify-content: center;
+  gap: 64px;
+  padding: 48px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-card);
+}
+
+.stat {
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, var(--text-primary), var(--accent-glow));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* ====== FEATURES ====== */
+.features {
+  padding: 120px 48px;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent-glow);
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  max-width: 700px;
+}
+
+.section-subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin-top: 16px;
+  max-width: 550px;
+  line-height: 1.7;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 64px;
+}
+
+.feature-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 36px;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.feature-card:hover {
+  border-color: rgba(99,102,241,0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.feature-card:hover::before { opacity: 1; }
+
+.feature-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.feature-icon.purple { background: rgba(99,102,241,0.12); }
+.feature-icon.cyan { background: rgba(6,182,212,0.12); }
+.feature-icon.green { background: rgba(34,197,94,0.12); }
+.feature-icon.amber { background: rgba(245,158,11,0.12); }
+.feature-icon.rose { background: rgba(244,63,94,0.12); }
+.feature-icon.blue { background: rgba(59,130,246,0.12); }
+
+.feature-card h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  letter-spacing: -0.01em;
+}
+
+.feature-card p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+/* ====== HOW IT WORKS ====== */
+.how-it-works {
+  padding: 120px 48px;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.how-inner {
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px;
+  margin-top: 72px;
+}
+
+.step {
+  position: relative;
+}
+
+.step-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 4rem;
+  font-weight: 800;
+  color: rgba(99,102,241,0.1);
+  line-height: 1;
+  margin-bottom: 20px;
+}
+
+.step-visual {
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.step-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 15px;
+}
+
+.step h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.step p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+/* ====== SHOWCASE SECTION ====== */
+.showcase {
+  padding: 120px 48px;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.showcase-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 64px;
+}
+
+.showcase-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+.showcase-card:hover {
+  border-color: rgba(99,102,241,0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.showcase-card.wide {
+  grid-column: span 2;
+}
+
+.showcase-img {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  display: block;
+  border-bottom: 1px solid var(--border);
+}
+
+.showcase-card.wide .showcase-img {
+  aspect-ratio: 21/9;
+}
+
+.showcase-info {
+  padding: 28px 32px;
+}
+
+.showcase-info h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.showcase-info p {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+/* ====== TECH STACK ====== */
+.tech-stack {
+  padding: 100px 48px;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+}
+
+.tech-grid {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 48px;
+  flex-wrap: wrap;
+}
+
+.tech-item {
+  padding: 20px 32px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s;
+}
+
+.tech-item:hover {
+  border-color: rgba(99,102,241,0.2);
+  transform: translateY(-2px);
+}
+
+.tech-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.tech-icon.cpp { background: rgba(0,89,156,0.2); color: #649ad2; }
+.tech-icon.qt { background: rgba(65,184,131,0.2); color: #41b883; }
+.tech-icon.sql { background: rgba(0,180,216,0.2); color: #00b4d8; }
+.tech-icon.ai { background: rgba(217,119,6,0.2); color: #f59e0b; }
+.tech-icon.cmake { background: rgba(244,63,94,0.15); color: #f43f5e; }
+
+/* ====== ARCHITECTURE ====== */
+.architecture {
+  padding: 120px 48px;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.arch-diagram {
+  margin-top: 64px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.arch-layer {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 36px;
+  text-align: center;
+  position: relative;
+  transition: all 0.4s;
+}
+
+.arch-layer:hover {
+  border-color: rgba(99,102,241,0.15);
+  transform: translateY(-4px);
+}
+
+.arch-layer-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 6px 14px;
+  border-radius: 100px;
+  display: inline-block;
+  margin-bottom: 16px;
+}
+
+.arch-layer-tag.view { background: rgba(6,182,212,0.12); color: var(--cyan); }
+.arch-layer-tag.controller { background: rgba(99,102,241,0.12); color: var(--accent-glow); }
+.arch-layer-tag.model { background: rgba(34,197,94,0.12); color: var(--green); }
+
+.arch-layer h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.arch-layer p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.arch-layer ul {
+  list-style: none;
+  margin-top: 16px;
+  text-align: left;
+}
+
+.arch-layer li {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  padding: 6px 0;
+  border-top: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ====== VERSION TIMELINE ====== */
+.timeline {
+  padding: 120px 48px;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.timeline-inner {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.timeline-items {
+  margin-top: 64px;
+  position: relative;
+}
+
+.timeline-items::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--accent), var(--cyan), var(--green));
+  opacity: 0.3;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 36px;
+  padding: 28px 0;
+  position: relative;
+}
+
+.timeline-dot {
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  border: 2px solid var(--accent-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--accent-glow);
+  z-index: 1;
+}
+
+.timeline-item:last-child .timeline-dot {
+  border-color: var(--green);
+  color: var(--green);
+  box-shadow: 0 0 20px rgba(34,197,94,0.2);
+}
+
+.timeline-content h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.timeline-content p {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.timeline-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.timeline-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  padding: 4px 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+}
+
+/* ====== CTA ====== */
+.cta-section {
+  padding: 120px 48px;
+  text-align: center;
+  position: relative;
+}
+
+.cta-section::before {
+  content: '';
+  position: absolute;
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.cta-section h2 {
+  font-size: clamp(2.2rem, 4vw, 3.5rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  max-width: 700px;
+  margin: 0 auto;
+  line-height: 1.1;
+}
+
+.cta-section p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin: 20px auto 40px;
+  max-width: 500px;
+  line-height: 1.7;
+}
+
+/* ====== FOOTER ====== */
+footer {
+  padding: 48px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+footer a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+footer a:hover { color: var(--text-primary); }
+
+.footer-links {
+  display: flex;
+  gap: 28px;
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 1024px) {
+  .features-grid, .steps, .arch-diagram { grid-template-columns: repeat(2, 1fr); }
+  .showcase-grid { grid-template-columns: 1fr; }
+  .showcase-card.wide { grid-column: span 1; }
+}
+
+@media (max-width: 768px) {
+  nav { padding: 16px 24px; }
+  .nav-links { display: none; }
+  .hero { padding: 120px 24px 60px; }
+  .features, .showcase, .architecture { padding: 80px 24px; }
+  .how-it-works, .tech-stack, .timeline, .cta-section { padding: 80px 24px; }
+  .features-grid, .steps, .arch-diagram { grid-template-columns: 1fr; }
+  .stats-bar { flex-direction: column; gap: 24px; align-items: center; }
+  .hero-actions { flex-direction: column; align-items: center; }
+  .floating-badge { display: none; }
+  footer { flex-direction: column; gap: 16px; text-align: center; }
+}
+
+/* Scroll animations */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+  <a href="#top" class="nav-logo">
+    <div class="nav-logo-icon">S</div>
+    Schedulify
+  </a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#showcase">Showcase</a></li>
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#versions">Versions</a></li>
+  </ul>
+  <a href="#download" class="nav-cta">Download v4.0</a>
+</nav>
+
+<!-- Hero -->
+<section class="hero" id="top">
+  <div class="hero-badge">Version 4.0 — Now with AI-Powered Filtering</div>
+  <h1>Build Your Perfect<br><span class="gradient-text">Schedule in Seconds</span></h1>
+  <p class="hero-subtitle">
+    A desktop application that generates every possible schedule combination for university students — powered by smart algorithms and AI assistance.
+  </p>
+  <div class="hero-actions">
+    <a href="#download" class="btn-primary">
+      ⬇ Download for Windows
+    </a>
+    <a href="#how-it-works" class="btn-secondary">
+      ▶ See How It Works
+    </a>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-screenshot-glow"></div>
+    <div class="hero-screenshot">
+      <video class="hero-video" src="./assets/schedulify-demo.mp4" controls muted playsinline></video>
+    </div>
+    <div class="floating-badge left">
+      🎓 50,000+ Schedules
+    </div>
+    <div class="floating-badge right">
+      🤖 AI-Powered Filters
+    </div>
+    <div class="floating-badge bottom">
+      ⚡ 3 Semesters Support
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-number">50,000+</div>
+    <div class="stat-label">Max Schedules Generated</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number">3</div>
+    <div class="stat-label">Semesters Supported</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number">9</div>
+    <div class="stat-label">Session Types Parsed</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number">35+</div>
+    <div class="stat-label">Schedule Metrics</div>
+  </div>
+  <div class="stat">
+    <div class="stat-number">4.0</div>
+    <div class="stat-label">Current Version</div>
+  </div>
+</div>
+
+<!-- Features -->
+<section class="features" id="features">
+  <div class="reveal">
+    <div class="section-label">Features</div>
+    <h2 class="section-title">Everything you need to plan the ideal semester</h2>
+    <p class="section-subtitle">From automatic schedule generation to AI-powered filtering — all in one powerful desktop application.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feature-icon purple">📅</div>
+      <h3>Backtracking Algorithm</h3>
+      <p>Generates every valid schedule combination from your selected courses using a recursive backtracking algorithm with conflict detection.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon cyan">🤖</div>
+      <h3>AI Schedule Assistant</h3>
+      <p>SchedBot powered by Claude AI translates natural language queries into SQL filters — ask "show me schedules with no gaps" in Hebrew or English.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon green">📊</div>
+      <h3>Multi-Semester Planning</h3>
+      <p>Plan Semester A, Semester B, and Summer all at once. Each semester generates independently with its own schedule pool and block times.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon amber">⏰</div>
+      <h3>Time Block Constraints</h3>
+      <p>Block specific hours or entire days per semester. The algorithm treats constraints as a special course, eliminating conflicting schedules automatically.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon rose">📋</div>
+      <h3>Smart Sorting & Metrics</h3>
+      <p>Sort by 5 criteria — study days, total gaps, gap time, average start, average end. Over 35 computed metrics per schedule stored in SQLite.</p>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon blue">➕</div>
+      <h3>Manual Course Creation</h3>
+      <p>Missing a course in the file? Add it manually with full session groups — lectures, tutorials, labs — with validation and real-time integration.</p>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="how-it-works" id="how-it-works">
+  <div class="how-inner">
+    <div class="reveal">
+      <div class="section-label">How It Works</div>
+      <h2 class="section-title">Three steps to your ideal schedule</h2>
+      <p class="section-subtitle">Upload, select, and explore — the algorithm handles the rest.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-number">01</div>
+        <div class="step-visual">
+          <div style="padding:24px; text-align:center;">
+            <div style="font-size:40px; margin-bottom:12px;">📂</div>
+            <div style="font-size:0.98rem; font-weight:600; margin-bottom:6px;">Upload course file</div>
+            <div style="font-size:0.8rem; color:var(--text-muted);">TXT &amp; XLSX, or from history</div>
+          </div>
+        </div>
+        <h3>Upload Your Courses</h3>
+        <p>Drag and drop your course file (TXT or Excel) or choose from previously uploaded files saved in the history database.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-number">02</div>
+        <div class="step-visual">
+          <div style="padding:24px; text-align:center;">
+            <div style="font-size:40px; margin-bottom:12px;">✅</div>
+            <div style="font-size:0.98rem; font-weight:600; margin-bottom:6px;">Pick courses &amp; block times</div>
+            <div style="font-size:0.8rem; color:var(--text-muted);">Up to 7 per semester, with constraints</div>
+          </div>
+        </div>
+        <h3>Select Your Courses</h3>
+        <p>Pick up to 7 courses per semester, set time constraints, add manual courses, and get real-time validation warnings.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-number">03</div>
+        <div class="step-visual">
+          <div style="padding:24px; text-align:center;">
+            <div style="font-size:40px; margin-bottom:12px;">🗓️</div>
+            <div style="font-size:0.98rem; font-weight:600; margin-bottom:6px;">Browse all combinations</div>
+            <div style="font-size:0.8rem; color:var(--text-muted);">Sort, filter with SchedBot, then export</div>
+          </div>
+        </div>
+        <h3>Explore Schedules</h3>
+        <p>Browse through every valid schedule, sort by preferences, use the AI chatbot for smart filtering, and export to PNG, CSV, or print.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Showcase -->
+<section class="showcase" id="showcase">
+  <div class="reveal">
+    <div class="section-label">Showcase</div>
+    <h2 class="section-title">See Schedulify in action</h2>
+    <p class="section-subtitle">A polished, intuitive interface built with Qt/QML — designed for real student workflows.</p>
+  </div>
+  <div class="showcase-grid">
+    <div class="showcase-card reveal">
+      <div class="showcase-img" style="display:flex;align-items:center;justify-content:center;font-size:0.95rem;color:var(--text-muted);background:linear-gradient(135deg,#1a1b25,#020617);">
+        Generated schedules view (visual demo placeholder)
+      </div>
+      <div class="showcase-info">
+        <h3>Generated Schedules Display</h3>
+        <p>Navigate through hundreds of valid schedule combinations with color-coded courses, building & room info, and time block indicators.</p>
+      </div>
+    </div>
+    <div class="showcase-card reveal">
+      <div class="showcase-img" style="display:flex;align-items:center;justify-content:center;font-size:0.95rem;color:var(--text-muted);background:linear-gradient(135deg,#111827,#020617);">
+        SchedBot assistant panel (visual demo placeholder)
+      </div>
+      <div class="showcase-info">
+        <h3>AI-Powered Schedule Filtering</h3>
+        <p>Ask SchedBot in Hebrew or English to find schedules matching your constraints — powered by Claude API with smart fallback mechanisms.</p>
+      </div>
+    </div>
+    <div class="showcase-card wide reveal">
+      <div class="showcase-img" style="display:flex;align-items:center;justify-content:center;font-size:0.95rem;color:var(--text-muted);background:radial-gradient(circle at top,#1f2937,#020617);">
+        Full workflow: upload → select courses → generate &amp; filter schedules → export (video demo coming soon)
+      </div>
+      <div class="showcase-info">
+        <h3>Complete End-to-End Workflow</h3>
+        <p>From file upload through course selection, constraint definition, algorithm execution, multi-semester schedule generation, AI-assisted filtering, to final export as PNG, CSV, or direct print — all within one seamless desktop experience.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Architecture -->
+<section class="architecture" id="architecture">
+  <div class="reveal">
+    <div class="section-label">Architecture</div>
+    <h2 class="section-title">Built with MVC discipline</h2>
+    <p class="section-subtitle">Clean separation of concerns with Qt Meta Object system bridging C++ controllers to QML views.</p>
+  </div>
+  <div class="arch-diagram">
+    <div class="arch-layer reveal">
+      <span class="arch-layer-tag view">View</span>
+      <h3>QML Interface</h3>
+      <p>Declarative UI with StackView navigation, modal popups, and responsive layouts.</p>
+      <ul>
+        <li>file_input.qml</li>
+        <li>course_selection.qml</li>
+        <li>schedules_display.qml</li>
+        <li>SchedBot.qml</li>
+        <li>AddCoursePopup.qml</li>
+      </ul>
+    </div>
+    <div class="arch-layer reveal">
+      <span class="arch-layer-tag controller">Controller</span>
+      <h3>C++ Logic Layer</h3>
+      <p>Meta Object powered controllers with Q_INVOKABLE, Q_PROPERTY, Signals & Slots.</p>
+      <ul>
+        <li>FileInputController</li>
+        <li>CourseSelectionController</li>
+        <li>ScheduleDisplayController</li>
+        <li>ControllerManager</li>
+        <li>MainController</li>
+      </ul>
+    </div>
+    <div class="arch-layer reveal">
+      <span class="arch-layer-tag model">Model</span>
+      <h3>Data & Algorithm</h3>
+      <p>Facade pattern with executeOperation menu, SQLite DB, backtracking engine.</p>
+      <ul>
+        <li>ScheduleBuilder</li>
+        <li>CourseLegalComb</li>
+        <li>ExcelCourseParser</li>
+        <li>DatabaseManager</li>
+        <li>ClaudeAPIClient</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Tech Stack -->
+<section class="tech-stack">
+  <div class="reveal">
+    <div class="section-label">Tech Stack</div>
+    <h2 class="section-title" style="margin:0 auto;">Engineered with modern tools</h2>
+  </div>
+  <div class="tech-grid reveal">
+    <div class="tech-item">
+      <div class="tech-icon cpp">C++</div>
+      C++17
+    </div>
+    <div class="tech-item">
+      <div class="tech-icon qt">Qt</div>
+      Qt 6 / QML
+    </div>
+    <div class="tech-item">
+      <div class="tech-icon sql">DB</div>
+      SQLite
+    </div>
+    <div class="tech-item">
+      <div class="tech-icon ai">AI</div>
+      Claude API
+    </div>
+    <div class="tech-item">
+      <div class="tech-icon cmake">⚙</div>
+      CMake
+    </div>
+  </div>
+</section>
+
+<!-- Version Timeline -->
+<section class="timeline" id="versions">
+  <div class="timeline-inner">
+    <div class="reveal">
+      <div class="section-label">Evolution</div>
+      <h2 class="section-title">Four versions of growth</h2>
+      <p class="section-subtitle">From CLI tool to a full-featured AI-powered desktop application.</p>
+    </div>
+    <div class="timeline-items">
+      <div class="timeline-item reveal">
+        <div class="timeline-dot">1.0</div>
+        <div class="timeline-content">
+          <h3>Version 1.0 — The Foundation</h3>
+          <p>Command-line tool that reads a course file and outputs all valid schedule combinations to a text file.</p>
+          <div class="timeline-tags">
+            <span class="timeline-tag">C++</span>
+            <span class="timeline-tag">TXT Parser</span>
+            <span class="timeline-tag">Backtracking</span>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-dot">2.0</div>
+        <div class="timeline-content">
+          <h3>Version 2.0 — Visual Interface</h3>
+          <p>Full GUI with Qt/QML — visual course selection, schedule grid display, print and save capabilities.</p>
+          <div class="timeline-tags">
+            <span class="timeline-tag">Qt 6</span>
+            <span class="timeline-tag">QML</span>
+            <span class="timeline-tag">MVC</span>
+            <span class="timeline-tag">Print/Save</span>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-dot">3.0</div>
+        <div class="timeline-content">
+          <h3>Version 3.0 — Excel & Preferences</h3>
+          <p>Excel file support, Group-based sessions, sorting by 5 criteria, time block constraints, and course validation.</p>
+          <div class="timeline-tags">
+            <span class="timeline-tag">Excel Parser</span>
+            <span class="timeline-tag">Sorting</span>
+            <span class="timeline-tag">Block Times</span>
+            <span class="timeline-tag">Validation</span>
+          </div>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-dot">4.0</div>
+        <div class="timeline-content">
+          <h3>Version 4.0 — AI & Multi-Semester</h3>
+          <p>Claude AI chatbot for natural language filtering, multi-semester planning (A/B/Summer), SQLite database, file history, and manual course creation.</p>
+          <div class="timeline-tags">
+            <span class="timeline-tag">Claude AI</span>
+            <span class="timeline-tag">SQLite</span>
+            <span class="timeline-tag">3 Semesters</span>
+            <span class="timeline-tag">File History</span>
+            <span class="timeline-tag">Manual Courses</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="download">
+  <div class="reveal">
+    <h2>Ready to build your<br><span class="gradient-text">perfect schedule?</span></h2>
+    <p>Download Schedulify 4.0 for Windows or macOS. No installation of Qt required — everything is bundled.</p>
+    <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+      <a href="../Schedulify.zip" class="btn-primary">⬇ Download for Windows</a>
+      <a href="../Schedulify.zip" class="btn-secondary">⬇ Download for macOS</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div>© 2025 Schedulify. All rights reserved.</div>
+  <div class="footer-links">
+    <a href="https://github.com/Schedulify-org/Schedulify">GitHub</a>
+    <a href="C:/Users/Elad/AppData/Roaming/Cursor/User/workspaceStorage/29b954118798b6b9090b72a00361d6a6/pdfs/0503d6bf-9f52-4394-a474-bfe4b543e1b6/SDD 4.0.pdf">Documentation (SDD 4.0)</a>
+  </div>
+</footer>
+
+<script>
+// Scroll reveal animation
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Navbar background on scroll
+window.addEventListener('scroll', () => {
+  const nav = document.querySelector('nav');
+  if (window.scrollY > 50) {
+    nav.style.background = 'rgba(10,11,15,0.92)';
+  } else {
+    nav.style.background = 'rgba(10,11,15,0.7)';
+  }
+});
+</script>
+
+</body>
+</html>
+
